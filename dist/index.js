@@ -55,10 +55,11 @@ if (stat.size != 0) {
 //var plugin = require(__dirname + '/app/lib/plugin');
 var plugin = require(__dirname + '/app/libs/plugin');
 //console.log(config);
+var http = require('http');
 
 //var favicon = require('serve-favicon');
 var app = module.exports.app = exports.app = (0, _express2.default)();
-var http = require('http').Server(app);
+var serverapp = http.Server(app);
 //var io = require('socket.io')(http);
 
 
@@ -78,7 +79,7 @@ app.get("/favicon.ico", function (req, res) {
     res.end(favicon);
 });
 
-var io = require('socket.io')(http);
+var io = require('socket.io')(serverapp);
 
 /*
 io.use(function(socket, next){
@@ -123,7 +124,8 @@ io.on('connection', function (socket) {
 
 var HOSTIP = process.env.IP || "0.0.0.0";
 var HOSTPORT = process.env.PORT || 80;
-http.listen(HOSTPORT, HOSTIP, function () {
+//serverapp.listen(HOSTPORT, HOSTIP, function () {
+serverapp.listen(HOSTPORT, function () {
     console.log('listening on:' + HOSTIP + ':' + HOSTPORT);
     console.log(new Date());
 });
@@ -159,28 +161,41 @@ var gun = new Gun({
 //thoughts.put({
 //hello: 'world',
 //})
-var http = require('http');
-var server = new http.Server(app);
+//var http = require('http');
+//var server = new http.Server(app);
 //var gundbfile = fs.readFileSync(__dirname+'/node_modules/gun/gun.js', "utf8");
 //var request = http.get("http://127.0.0.1:8080/gun.js", function(response) {
 //  response.pipe(file);
 //});
-server.on('request', gun.wsp.server);
+serverapp.on('request', gun.wsp.server);
+gun.wsp(serverapp);
+
+//var WebSocketServer = require("ws").Server;
+//var wss = new WebSocketServer({server: serverapp});
+//gun.wsp(wss);
+
+//var WebSocketServer = require("websocket").server;
+
+// create the server
+//var wsServer = new WebSocketServer({
+//httpServer: serverapp
+//});
+
+//gun.wsp(wsServer);
+
+//wsServer.onmessage = function(msg){
+//gun.on('in', JSON.parse(msg.data));
+//};
+
+//server.on('request', gun.wsp.server);
 //Handle incoming gun traffic
 //from clients (that's where the
 //real-time goodness comes from).
-gun.wsp(server);
-console.log("Initialzie Gun Database");
-
-server.listen(8080, '127.0.0.1', function () {
+//gun.wsp(server);
+//console.log("Initialzie Gun Database");
+/*
+server.listen(8080, function () {
     console.log('listening on:' + '127.0.0.1' + ':' + '8080' + ' GunDB.js');
     console.log(new Date());
 });
-
-//import { createServer } from 'http';
-//console.log("init server web?");
-//createServer((req,res)=>{
-//res.writeHead(200,{'Content-Type':'text/plain'});
-//res.end('Hello World\n');
-//}).listen(3000,'127.0.0.1');
-//console.log('Server running at http://127.0.0.1:3000');
+*/
