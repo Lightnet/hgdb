@@ -160,7 +160,7 @@ var gun = new Gun({
 //hello: 'world',
 //})
 var http = require('http');
-var server = new http.Server();
+var server = new http.Server(app);
 //var gundbfile = fs.readFileSync(__dirname+'/node_modules/gun/gun.js', "utf8");
 //var request = http.get("http://127.0.0.1:8080/gun.js", function(response) {
 //  response.pipe(file);
